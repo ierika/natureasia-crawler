@@ -1,5 +1,6 @@
 import os
-from scrapy.spiders import CrawlSpider, Rule
+from scrapy.spiders import CrawlSpider
+from scrapy.spiders import Rule
 from scrapy.linkextractors import LinkExtractor
 from unipath import Path
 
