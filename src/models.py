@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from peewee import *
 from unipath import Path
 
@@ -16,8 +14,8 @@ LANGUAGES = (
 
 
 class BaseModel(Model):
-    created = DateTimeField(null=False, default=datetime.now())
-    updated = DateTimeField(null=False, default=datetime.now())
+    created = DateTimeField(null=False)
+    updated = DateTimeField(null=False)
 
     class Meta:
         database = db
@@ -25,6 +23,7 @@ class BaseModel(Model):
 
 class Url(BaseModel):
     url = CharField(max_length=255, unique=True, null=False, index=True)
+    referer = CharField(max_length=255, null=False, default='', index=True)
     priority = DecimalField(null=False, default=5.0)
     language = CharField(null=False, choices=LANGUAGES, max_length=10)
 

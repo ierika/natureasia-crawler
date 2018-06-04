@@ -1,4 +1,3 @@
-import os
 import re
 from datetime import datetime
 
@@ -6,9 +5,9 @@ from scrapy.spiders import CrawlSpider
 from scrapy.crawler import CrawlerProcess
 from scrapy.spiders import Rule
 from scrapy.linkextractors import LinkExtractor
-from unipath import Path
 
-import models
+from models import db
+from models import Url
 
 
 class MySpider(CrawlSpider):
@@ -39,17 +38,6 @@ class MySpider(CrawlSpider):
         ),
     )
 
-    @property
-    def export_file(self):
-        """
-        Return a Path object of the output file.
-        The output file will contain the URLs that was crawled.
-        """
-        return Path('{}/Downloads/sitemap_{}.xml'.format(
-            os.getenv('HOME'),
-            datetime.now().strftime('')
-        ))
-
     def parse_item(self, response):
         """
         Update or create database entry.
@@ -58,21 +46,28 @@ class MySpider(CrawlSpider):
         update the priority instead just in case it changed.
         Otherwise, just create an entry.
         """
-        language, priority = self.parse_url(response.url)
-        try:
-            url = models.Url.get(url=response.url)
-            url.priority = priority
-            url.language = language
-            url.update = datetime.now()
-            url.save()
-            print('{} entry updated.'.format(response.url))
-        except Exception as e:
-            models.Url.create(
-                url=response.url,
+        referer = response.request.headers.get('Referer', '')
+        url = response.url
+        language, priority = self.parse_url(url)
+        record = Url.select().where(Url.url == url)
+        if len(record):
+            record = record.get()
+            record.priority = priority
+            record.language = language
+            record.updated = datetime.now()
+            record.referer = referer
+            record.save()
+            print('{} entry updated.'.format(url))
+        else:
+            Url.create(
+                url=url,
                 priority=priority,
                 language=language,
+                referer=referer,
+                created=datetime.now(),
+                updated=datetime.now(),
             )
-            print('{} entry created.'.format(response.url))
+            print('{} entry created.'.format(url))
 
     def parse_url(self, url):
         patterns = [
@@ -110,7 +105,7 @@ class MySpider(CrawlSpider):
 
 if __name__ == "__main__":
     # Create table if doesn't exist yet
-    models.db.create_tables([models.Url])
+    db.create_tables([Url])
 
     process = CrawlerProcess({
         'USER_AGENT': """Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4)
