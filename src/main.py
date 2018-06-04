@@ -22,8 +22,12 @@ class MySpider(CrawlSpider):
     rules = (
         Rule(
             LinkExtractor(
-                allow=r'https://www\.natureasia\.com/(ja-jp|ko-kr|en)',
-                deny=r'https://www\.natureasia\.com/en/(middleeast|nindia)',
+                allow=r'https?://www\.natureasia\.com/(ja-jp|ko-kr|en)',
+                deny=[
+                    r'https?://www\.natureasia\.com/en/(middleeast|nindia)',
+                    r'https?://www\.natureasia\.com/secure/.*',
+                ],
+                allow_domains=allowed_domains,
             ),
             callback='parse_item',
             follow=True,
@@ -90,6 +94,9 @@ class MySpider(CrawlSpider):
 
 
 if __name__ == "__main__":
+    # Create table if doesn't exist yet
+    models.db.create_tables([models.Url])
+
     process = CrawlerProcess({
         'USER_AGENT': """Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4)
             AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139

@@ -27,6 +27,9 @@ class Url(BaseModel):
     priority = DecimalField(null=False, default=5.0)
     language = CharField(null=False, choices=LANGUAGES, max_length=10)
 
+    class Meta:
+        table_name = 'urls'
+
     def __str__(self):
         return self.url
 
