@@ -22,10 +22,10 @@ class MySpider(CrawlSpider):
     rules = (
         Rule(
             LinkExtractor(
-                allow=r'https?://www\.natureasia\.com/(ja-jp|ko-kr|en)',
+                allow=r'^https?://www\.natureasia\.com/(ja-jp|ko-kr|en).*$',
                 deny=[
-                    r'https?://www\.natureasia\.com/en/(middleeast|nindia)',
-                    r'https?://www\.natureasia\.com/secure/.*',
+                    r'^https?://www\.natureasia\.com/en/(middleeast|nindia)$',
+                    r'^https?://www\.natureasia\.com/secure/.*$',
                 ],
                 allow_domains=allowed_domains,
             ),
@@ -41,6 +41,7 @@ class MySpider(CrawlSpider):
             self.root_url + '/ja-jp',
             self.root_url + '/en',
             self.root_url + '/ko-kr',
+            # self.root_url + '/zh-cn',
         ]
 
     @property
