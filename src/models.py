@@ -32,6 +32,3 @@ class Url(BaseModel):
 
     def __str__(self):
         return self.url
-
-    def create_xml(self, output_path):
-        pass

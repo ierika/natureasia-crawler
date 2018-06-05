@@ -39,3 +39,4 @@ data/media/image_repository
 data/*
 node_modules/
 staticfiles/
+urls.db
