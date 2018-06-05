@@ -122,7 +122,7 @@ class MySpider(CrawlSpider):
             match = re.match(pattern, url)
             if match:
                 return match.group(1), priority
-        return '', 5.0
+        return '', 0.5
 
     def spider_closed(self):
         """Generate XML after everything is done"""
