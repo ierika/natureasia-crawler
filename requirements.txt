@@ -1,6 +1,7 @@
 asn1crypto==0.24.0
 attrs==18.1.0
 Automat==0.6.0
+beautifulsoup4==4.6.0
 cffi==1.11.5
 constantly==15.1.0
 cryptography==2.2.2
@@ -10,6 +11,7 @@ idna==2.6
 incremental==17.5.0
 lxml==4.2.1
 parsel==1.4.0
+peewee==3.5.0
 pyasn1==0.4.2
 pyasn1-modules==0.2.1
 pycparser==2.18
