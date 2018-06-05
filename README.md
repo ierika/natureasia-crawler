@@ -52,10 +52,13 @@ $ pip install -r requirements.txt
 
 
 ## How to use
-### Crawl
+### Switch to virtual environment
 ```bash
 $ cd /path/to/cloned/project
 $ source venv/bin/activate
+```
+### Run crawl script
+```bash
 $ python src/main.py
 ```
 If you want to run it in the background
@@ -69,8 +72,8 @@ It will contain the output of the program.
 Database output location:
 `src/urls.db`
 
-### Output XML file
-If the problem doesn't already do it. Please run the script named `xml_exporter.py`.
+### Export XML file
+Please run the script named `xml_exporter.py`.
 It's on the same directory as `main.py`.
 
 ```bash
