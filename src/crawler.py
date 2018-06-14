@@ -37,7 +37,7 @@ class MySpider(CrawlSpider):
                 deny=(
                     r'natureasia\.com/en/(nmiddleeast|nindia)',
                     r'natureasia\.com/(zh-tw|zh-cn)',
-                    r'natureasia\.com/secure',
+                    r'natureasia\.com/secure/(zh-tw|zh-cn)',
                 ),
             ),
             callback='parse_item',
