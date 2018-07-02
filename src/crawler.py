@@ -61,13 +61,23 @@ class MySpider(CrawlSpider):
         update the priority instead just in case it changed.
         Otherwise, just create an entry.
         """
+        # Get referer
         referer = response.request.headers.get('Referer', '')
+
+        # Always replace http:// with https://
         url = response.url.replace('http://', 'https://')
+
+        # Always strip the trailing slash if there is
         url = url.rstrip('/')
+
+        # Analyze the URL for language and priority level
         language, priority = self.parse_url(url)
+
+        # Write all the necessary information to the database
         with db.atomic():
             record = Url.select().where(Url.url == url)
             current_datetime = datetime.now()
+
             if len(record):
                 record = record.get()
                 record.priority = priority
@@ -93,35 +103,62 @@ class MySpider(CrawlSpider):
         And extract language information.
         """
         patterns = [
+            # Language top pages should be 1.0
             (
                 r'^https?://www.natureasia.com/{}/?$'.format(
                     self.languages_regex,
                 ),
                 1.0
             ),
+
+            # All pages just one-level below the language part of the URL
+            # Should be considered top-level pages
             (
                 r'^https?://www.natureasia.com/{}/[\w\-\.]+/?$'.format(
                     self.languages_regex,
                 ),
                 1.0,
             ),
+
+            # TOC pages should also be 1.0
             (
                 r'^https?://www.natureasia.com/{}/[\w\-\.]+/toc/?$'.format(
                     self.languages_regex,
                 ),
                 1.0,
             ),
+
+            # Article, Abstracts, and Highlights landing pages are 0.7
             (
-                r'^https?://www.natureasia.com/{}/[\w\-\.]+/.+/?$'.format(
+                r'^https?://www.natureasia.com/{}/[\w_-]+' \
+                + '/(pr-highlights|articles|abstracts|research)/?$'.format(
                     self.languages_regex,
                 ),
                 0.7,
             ),
+            (
+                r'^https?://www.natureasia.com/{}/nature/supplements/?$'.format(
+                    self.languages_regex,
+                ),
+                0.7,
+            ),
+
+            # The rest are set as 0.5
+            (
+                r'^https?://www.natureasia.com/{}/.*/?$'.format(
+                    self.languages_regex,
+                ),
+                0.5,
+            ),
         ]
+
+        # Check if one of the patterns from above matches the URL
         for pattern, priority in patterns:
             match = re.match(pattern, url)
+
             if match:
                 return match.group(1), priority
+
         return '', 0.5
 
     def spider_closed(self):
