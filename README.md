@@ -32,6 +32,7 @@ $ python3 -m pip install virtualenv
 $ cd /path/to/cloned/project
 $ virtualenv venv --python=$(which python3)
 ```
+`which python3` ensures the virtualenv will use a Python3 executable, not the ver. 2.
 
 Enable virtual environment by sourcing it.
 ```bash
@@ -41,8 +42,6 @@ To deactivate (after you're done with using the app)
 ```bash
 $ deactivate
 ```
-
-`which python3` ensures the virtualenv will use a Python3 executable, not the ver. 2.
 
 ### Install dependencies
 
