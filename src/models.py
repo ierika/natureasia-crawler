@@ -1,10 +1,17 @@
 from peewee import *
-from unipath import Path
+
+from . import config
 
 
-cwd = Path(__file__).parent
-db = SqliteDatabase(cwd.child('urls.db'))
+# Export directory
+export_dir = config.EXPORT_DIR
+if not export_dir.exists():
+    export_dir.mkdir()
 
+# Database path
+db = SqliteDatabase(config.DB_PATH)
+
+# Language choices
 LANGUAGES = (
     'ja-jp',
     'en',
@@ -14,6 +21,7 @@ LANGUAGES = (
 
 
 class BaseModel(Model):
+    """Timestamped abstract model"""
     created = DateTimeField(null=False)
     updated = DateTimeField(null=False)
 
@@ -22,6 +30,7 @@ class BaseModel(Model):
 
 
 class Url(BaseModel):
+    """The URL model"""
     url = CharField(max_length=255, unique=True, null=False, index=True)
     referer = CharField(max_length=255, null=False, default='', index=True)
     priority = DecimalField(null=False, default=5.0)

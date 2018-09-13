@@ -40,3 +40,5 @@ data/*
 node_modules/
 staticfiles/
 urls.db
+nohup.out
+exports/

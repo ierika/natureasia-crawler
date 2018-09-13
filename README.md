@@ -58,34 +58,44 @@ $ source venv/bin/activate
 ```
 ### Run crawl script
 ```bash
-$ python src/main.py
+$ python main.py
 ```
-If you want to run it in the background
+
+### Run crawl script in the background (optional but recommended)
+If you want to run it in the background and monitor the output
 ```bash
-$ nohup python src/main.py &
+$ nohup python main.py &
 ```
-This will just update the current database that has been created.
-`nohup.out` will be generated on the directory you ran it from.
-It will contain the output of the program.
 
-Database output location:
-`src/urls.db`
+NOTE: This will just update the current database that has been created.
+`nohup.out` (**nohup** means no hangup) will be generated on the directory you ran it from.
+It will contain the output of the program in which you can monitor anytime.
 
-### Export XML file
-Please run the script named `xml_exporter.py`.
-It's on the same directory as `main.py`.
-
+To monitor the output:
 ```bash
-$ python src/xml_exporter.py
+$ tail -f nohup.out
 ```
 
-XML file output location:
-`~/Downloads/sitemap_<current_datetime>.xml`
 
-Depending on the number of the URLs in the database. Each XML file that will be generated will contain up to a maximum of 50,000 URLs.
+### Database output location
+The crawler script will write to an Sqlite database while it's running.
+That database is located at `exports/urls.db`.
 
 
 ## Browse the database
 If you're not familiar with `sqlite3` commands. Please consider installing a desktop application.
 
 https://sqlitebrowser.org/
+
+
+### Export XML file
+At the same directory where `main.py` is, run the following command:
+```bash
+$ python export_xml.py
+```
+
+XML file output location:
+`exports/sitemap_<current_datetime>.xml`
+
+If the number of URLs to be generated exceeds 50,000, the script will
+separate the URLs into several XML files. Each containing a maximum of 50k URLs.

@@ -1,8 +1,8 @@
 from scrapy.crawler import CrawlerProcess
 
-from models import db
-from models import Url
-from crawler import MySpider
+from src.models import db
+from src.models import Url
+from src.crawler import MySpider
 
 
 if __name__ == "__main__":

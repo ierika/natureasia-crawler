@@ -6,9 +6,8 @@ from scrapy.http import Request
 from scrapy.spiders import Rule
 from scrapy.linkextractors import LinkExtractor
 
-from xml_exporter import Xml
-from models import db
-from models import Url
+from .models import db
+from .models import Url
 
 
 """
@@ -114,7 +113,7 @@ class MySpider(CrawlSpider):
             # All pages just one-level below the language part of the URL
             # Should be considered top-level pages
             (
-                r'^https?://www.natureasia.com/{}/[\w\-\.]+/?$'.format(
+                r'^https?://www.natureasia.com/{}/[\w.-]+/?$'.format(
                     self.languages_regex,
                 ),
                 1.0,
@@ -122,7 +121,7 @@ class MySpider(CrawlSpider):
 
             # TOC pages should also be 1.0
             (
-                r'^https?://www.natureasia.com/{}/[\w\-\.]+/toc/?$'.format(
+                r'^https?://www.natureasia.com/{}/[\w.-]+/toc/?$'.format(
                     self.languages_regex,
                 ),
                 1.0,
@@ -130,14 +129,15 @@ class MySpider(CrawlSpider):
 
             # Article, Abstracts, and Highlights landing pages are 0.7
             (
-                r'^https?://www.natureasia.com/{}/[\w_-]+' \
+                r'^https?://www.natureasia.com/{}/[\w-]+' \
                 + '/(pr-highlights|articles|abstracts|research)/?$'.format(
                     self.languages_regex,
                 ),
                 0.7,
             ),
             (
-                r'^https?://www.natureasia.com/{}/nature/supplements/?$'.format(
+                r'^https?://www.natureasia.com/{}/nature'
+                + '/supplements/?$'.format(
                     self.languages_regex,
                 ),
                 0.7,
@@ -160,7 +160,3 @@ class MySpider(CrawlSpider):
                 return match.group(1), priority
 
         return '', 0.5
-
-    def spider_closed(self):
-        """Generate XML after everything is done"""
-        Xml().generate_xml()
